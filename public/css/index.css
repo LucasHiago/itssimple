@@ -1,0 +1,106 @@
+@font-face {
+    font-family: 'aero_maticsbold';
+    src: url('../fonts/aero_matics_bold-webfont.eot');
+    src: url('../fonts/aero_matics_bold-webfont.eot?#iefix') format('embedded-opentype'),
+         url('../fonts/aero_matics_bold-webfont.woff2') format('woff2'),
+         url('../fonts/aero_matics_bold-webfont.woff') format('woff'),
+         url('../fonts/aero_matics_bold-webfont.ttf') format('truetype'),
+         url('../fonts/aero_matics_bold-webfont.svg#aero_maticsbold') format('svg');
+    font-weight: normal;
+    font-style: normal;
+}
+
+html, 
+body, 
+.container, 
+.content-wrap {
+    overflow: hidden;
+    overflow-x: hidden;
+    overflow-y: hidden;
+}
+
+body{
+    background-color: #EFEFEF;
+    font-family: aero_maticsbold;
+    color: #666;
+    margin-top: 0px;
+}
+
+.productBox{
+    list-style: none;
+    height: auto;
+}
+
+.productBoxMobile{
+    margin-bottom: 10px;
+    list-style: none;
+    border-bottom: 1px solid #CCC;
+    overflow: hidden;
+    clear: both;
+    text-align: left;
+    vertical-align: central;
+}
+
+.animation.ng-enter {
+  -webkit-transition: 1s;
+  opacity: 0;
+}
+
+.animation.ng-enter-stagger {
+  transition-delay: 0.1s;
+}
+
+.animation.ng-enter.ng-enter-active {
+  -webkit-transform: rotateX(-180deg) translatez(30px);
+  opacity: 1;
+}
+
+.animation.ng-enter.ng-enter-active, .animate-leave {
+    -webkit-transform: rotateX(0deg) translatez(30px);
+}
+
+.storelist{
+    margin: 10px;
+    padding: 10px;
+    -webkit-border-radius: 4px;
+    -moz-border-radius: 4px;
+    border-radius: 4px;
+    margin-bottom: 10px;
+}
+
+@media screen and (min-width: 1000px) {
+    .content-wrap {
+        margin-left: 60px;
+        margin-right: 60px;
+    }
+}
+
+.boxproduto_lojas {
+    width: 100%;
+}
+
+@media screen and (min-width: 1600px) {
+    .boxproduto_lojas {
+        width: 33%
+    }
+}
+
+
+
+.boxproduto:hover .infolojas{
+    display: block;
+}
+
+.infolojas{
+    position: absolute;
+    width: 100%;
+    min-height: 190px;
+    background-color: rgba(0,0,0,0.5);
+    z-index: 50;
+    -webkit-border-radius: 4px;
+    -moz-border-radius: 4px;
+    border-radius: 4px;
+    display: none;
+    top: 0px;
+    paddding: 20px;
+}

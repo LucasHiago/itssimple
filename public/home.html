@@ -1,0 +1,193 @@
+<div class="menu-wrap">
+    <nav class="menu">
+        <h2 style="margin: 0px">Filtros</h2>
+        
+        <div class="form-group">
+            <label for="filter_price">Quero pagar no máximo</label>
+            <input type="text" class="form-control" name="filter_price" id="filter_price" placeholder="R$300" ng-model="filter.price" />
+        </div>
+        
+        <div class="form-group">
+            <label for="filter_price">no preço</label>
+            <select class="form-control"> 
+                <option>á vista</option>
+                <option>da parcela</option>
+            </select>
+        </div>
+        
+        <button class="btn btn-block btn-success">Filtrar</button>
+    </nav>
+    <button class="close-button" id="close-button">Close Menu</button>
+    <div class="morph-shape" id="morph-shape" data-morph-open="M-1,0h101c0,0,0-1,0,395c0,404,0,405,0,405H-1V0z">
+        <svg xmlns="http://www.w3.org/2000/svg" width="100%" height="100%" viewBox="0 0 100 800" preserveAspectRatio="none">
+            <path d="M-1,0h101c0,0-97.833,153.603-97.833,396.167C2.167,627.579,100,800,100,800H-1V0z"/>
+        </svg>
+    </div>
+</div>
+    
+<div class="content-wrap" ng-controller="produtos" ng-init="loadData('stores', 'stores')" style="padding: 10px">
+    <div class="section active" id="section0">
+        <div style="clear: both; margin: auto">
+            <form ng-submit="filterProdutos(f)" ng-show="results.total > 0 && results.total != null" class="animation">
+                <div class="col-md-12" style="position: relative; height: 52px;">
+                    <h1 style="margin-top: 10px">It's Simple</h1><div style="color: red; font-size: 12px; position: absolute; left: 185px; top:0px;">BETA</div>
+                </div>
+
+                <div class="col-md-12" style="margin-bottom: 20px; text-align: center" ng-disabled="inprocess">
+                    <autocomplete name="f" id="f" ng-model="f" on-select="filterProdutos" data="autocomplete" attr-placeholder="O que você deseja comprar ?"></autocomplete>
+                </div>
+            </form>
+            
+            <form ng-submit="filterProdutos(f)" ng-show="(results.total <= 0 || results.total == null) && !mobile" class="animation" style="position: absolute; top: 50%; margin-top: -100px; width: 500px; left: 50%; margin-left: -250px">
+                <div class="col-md-12" style="position: relative; height: 52px;">
+                    <h1 style="margin-top: 10px;">It's Simple</h1><div style="color: red; font-size: 12px; position: absolute; left: 185px; top:0px;">BETA</div>
+                </div>
+                <div class="input-group" style="margin-bottom: 20px; width: 100%; text-align: center">
+                    <autocomplete ng-model="f" on-select="filterProdutos" data="autocomplete" attr-placeholder="O que você deseja comprar ?"></autocomplete>
+                </div>
+            </form>
+
+            <form ng-submit="filterProdutos(f)" ng-show="(results.total <= 0 || results.total == null) && mobile" class="animation" style="position: absolute; top: 50%; margin-top: -100px; width: 250px; left: 50%; margin-left: -125px">
+                <div class="col-md-12" style="position: relative; height: 52px;">
+                    <h1 style="margin-top: 10px;">It's Simple</h1><div style="color: red; font-size: 12px; position: absolute; left: 185px; top:0px;">BETA</div>
+                </div>
+                <div class="input-group" style="margin-bottom: 20px; width: 100%; text-align: center">
+                    <autocomplete name="f" id="f" ng-model="f" on-select="filterProdutos" data="autocomplete" attr-placeholder="O que você deseja comprar ?"></autocomplete>
+                </div>
+            </form>
+            
+            <a class="left carousel-control" style="width: 60px" role="button" data-slide="prev" ng-show="currentpage > 1 && !mobile" ng-click="filterProdutos(null, currentpage-1)"> 
+                <span class="glyphicon glyphicon-chevron-left" aria-hidden="true"></span> <span class="sr-only">Previous</span> 
+            </a>
+
+            <a class="right carousel-control" style="width: 60px" role="button" data-slide="next" ng-show="(results.total > 0 && (currentpage*8) < results.total) && !mobile" ng-click="filterProdutos(null, currentpage+1)"> 
+                <span class="glyphicon glyphicon-chevron-right" aria-hidden="true"></span> <span class="sr-only">Next</span> 
+            </a>
+            
+            <div class="alert alert-danger" ng-if="error">{{error}}</div>
+        </div>
+        
+        <browse-content style="margin: auto; text-align: center;">
+            <div ng-show="results.total" style="margin-bottom: 20px; font-size: 20px"> Em exibição {{(currentpage*16)-15}} à {{((currentpage*16 < results.total) ? currentpage*16 : results.total)}} no total de {{results.total | number}} produtos</div>
+            
+            <!-- Desktop Tablet -->
+            <ul style="text-align: center; margin: 0px; padding: 0px;" ng-if="!mobile">
+                <li ng-repeat="item in results.docs" class="col-md-3 productBox animation">
+                    <div ng-if="item.type == 'group'" ng-init="loadData('json/'+item.type+'/'+item._id, item._id, 'listproducts')">
+                        <div ng-show="listproducts[item._id].products.length > 1" style="position: relative" class="boxproduto">
+                            <div>
+                                <img class="img-responsive img-thumbnail" src="{{item.image}}" style="width: 200px; height: 200px" />
+                            </div>
+
+                            <span style="color: red" ng-if="item.minmax.min != item.minmax.max && item.type == 'group'">De {{item.minmax.min | currency : 'R$' : 0}} à {{item.minmax.max | currency : 'R$' : 0}}</span>
+                            <span style="color: red" ng-if="item.minmax.min == item.minmax.max && item.type == 'group'">{{item.minmax.max | currency : 'R$' : 0}}</span>
+                            <span style="color: red" ng-if="item.type == 'product'">{{item.price | currency : 'R$' : 0}}</span>
+                            <div style="font-size: 15px; height: 40px; margin-bottom: 30px; text-overflow: ellipsis; overflow: hidden">{{item.title| htmlentities}}</div>
+                            
+                            <div class="infolojas" style="color: #FFF">
+                                <div ng-repeat="product in listproducts[item._id].products" class="boxproduto_lojas" style='border-button: 1px solid #CCC; font-size: 15px; padding: 5px; float: left'>
+                                    <div>
+                                        <img src="http://www.google.com/s2/favicons?domain={{stores[product.store].domain}}" style='width: 16px; height: 16px' /><br/>
+                                        {{stores[product.store]['name']}}<br/> 
+                                        <span style="font-size: 20px">{{product.price | currency : 'R$' : 0}}</span>
+                                    </div> 
+                                    <a class='btn btn-danger btn-block' href='{{product | returnlink}}' target='_blank'>Comprar</a>
+                                </div>
+                            </div>
+                        </div>                    
+
+                        <!-- Grupo -->
+                        <div ng-if="listproducts[item._id].products.length == 1">
+                            <a style="color: #666666" href="{{listproducts[item._id].products[0] | returnlink}}" target="_blank"> 
+                                <div>
+                                    <img class="img-responsive img-thumbnail" src="{{item.image}}" style="width: 200px; height: 200px" />
+                                </div>
+
+                                <span style="color: red">{{item.minmax.max | currency : 'R$' : 0}}</span>
+                                <div style="font-size: 15px; height: 40px; margin-bottom: 30px; text-overflow: ellipsis; overflow: hidden">{{item.title| htmlentities}}</div>
+                            </a>
+                        </div>
+                    </div>
+                         
+                    <!-- Produto -->
+                    <div ng-if="item.type == 'product'">
+                        <a style="color: #666666" href="{{item | returnlink}}" target="_blank"> 
+                            <div>
+                                <img class="img-responsive img-thumbnail" src="{{item.image}}" style="width: 200px; height: 200px" />
+                            </div>
+
+                            <span style="color: red">{{item.price | currency : 'R$' : 0}}</span>
+                            <div style="font-size: 15px; height: 40px; margin-bottom: 30px; text-overflow: ellipsis; overflow: hidden">{{item.title| htmlentities}}</div>
+                        </a>
+                    </div>
+                </li>
+            </ul>
+            
+            <!-- Mobile -->
+            <div ng-if="mobile">
+                <ul style="text-align: center; margin: 0px; padding: 0px;">
+                    <li ng-repeat="item in results.docs" class="col-md-12 productBoxMobile animation" style="padding: 0px">
+                        <!-- Produto -->
+                        <div style="cursor: pointer" ng-if="item.type == 'product'">
+                            <a href="{{item | returnlink}}" target="_black" style="color: #666666">
+                                <div style="float: left">
+                                    <img class="img-responsive img-thumbnail" src="{{item.image}}" style="width: 100px; height: 100px; margin-right: 20px" />
+                                </div>
+                                <div style="font-size: 14px; height: 100px; overflow: hidden; margin-bottom: 30px;">
+                                    <div style="max-height: 60px; text-overflow:ellipsis; overflow: hidden;">{{item.title| htmlentities}}</div>
+                                    <div style="color: red"><img src="http://www.google.com/s2/favicons?domain={{stores[item.store].domain}}" style='width: 16px; height: 16px' />  Na loja {{stores[item.store].name}} o preço é {{item.price | currency : 'R$' : 0}}</div>
+                                </div>
+                            </a>
+                        </div>
+                        
+                        <div ng-if="item.type == 'group'" ng-init="loadData('json/'+item.type+'/'+item._id, item._id, 'listproducts')">
+                            <div ng-if="listproducts[item._id].products.length > 1">
+                                <div data-toggle="collapse" data-target="#collapse_{{item._id}}" aria-expanded="false" aria-controls="collapse_{{item._id}}" style="cursor: pointer">
+                                    <div style="float: left">
+                                        <img class="img-responsive img-thumbnail" src="{{item.image}}" style="width: 100px; height: 100px; margin-right: 20px" />
+                                    </div>
+                                    <div style="font-size: 14px; height: 100px; overflow: hidden; margin-bottom: 30px;">
+                                        <div style="max-height: 60px; text-overflow: ellipsis; overflow: hidden;">{{item.title| htmlentities}}</div>
+                                        <div style="color: red" ng-if="item.minmax.min != item.minmax.max && item.type == 'group'">De {{item.minmax.min | currency : 'R$' : 0}} à {{item.minmax.max | currency : 'R$' : 0}}</div>
+                                        <div style="color: red" ng-if="item.minmax.min == item.minmax.max && item.type == 'group'">{{item.minmax.max | currency : 'R$' : 0}}</div>
+                                        <div style="color: red" ng-if="item.type == 'product'">{{item.price | currency : 'R$' : 0}}</div>
+                                    </div>
+                                </div>
+                                <div id="collapse_{{item._id}}" style="width: 100%; background-color: #FFF; overflow: hidden; clear: both; margin: 0px" class="collapse storelist" >
+                                    <div ng-repeat="product in listproducts[item._id].products" style='border-button: 1px solid #CCC; font-size: 15px; padding: 5px; width: 160px; float: left'>
+                                        <div>
+                                            <img src="http://www.google.com/s2/favicons?domain={{stores[product.store].domain}}" style='width: 16px; height: 16px' /> 
+                                            {{stores[product.store]['name']}}<br/> 
+                                            <span style="font-size: 20px">{{product.price | currency : 'R$' : 0}}</span>
+                                        </div> 
+                                        <a class='btn btn-danger' href='{{product | returnlink}}' target='_blank'>Comprar</a>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Grupo com 1 produto -->
+                            <div style="cursor: pointer" ng-if="listproducts[item._id].products.length == 1">
+                                <a href="{{listproducts[item._id].products[0] | returnlink}}" target="_black" style="color: #666666">
+                                    <div style="float: left">
+                                        <img class="img-responsive img-thumbnail" src="{{item.image}}" style="width: 100px; height: 100px; margin-right: 20px" />
+                                    </div>
+                                    <div style="font-size: 14px; height: 100px; overflow: hidden; margin-bottom: 30px;">
+                                        <div style="max-height: 60px; overflow: hidden; text-overflow:ellipsis;">{{item.title| htmlentities}}</div>
+                                        <div style="color: red" ng-if="item.minmax.min == item.minmax.max && item.type == 'group'"><div style="color: red"><img src="http://www.google.com/s2/favicons?domain={{stores[listproducts[item._id].products[0].store].domain}}" style='width: 16px; height: 16px' /> Na loja {{stores[listproducts[item._id].products[0].store].name}} o preço é {{item.minmax.max | currency : 'R$' : 0}}</div>
+                                    </div>
+                                </a>
+                            </div>
+                        </div>
+                    </li>
+                </ul>
+                <button class="btn btn-success btn-block btn-lg" ng-if="!noresults && results.total > 0">Mais resultados</button>
+            </div>
+            
+            <div ng-if="noresults">
+                <div style="font-size: 50px;">
+                    Foi mal mais não encontramos nenhum produto =/
+                </div>
+            </div>
+        </browse-content>
+    </div>
+</div>

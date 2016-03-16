@@ -1,0 +1,6 @@
+{
+    "port": 9000,
+    "mongodb": "mongodb://localhost:27017/itssimple",
+    "session": {"uri": "mongodb://localhost:27017/itssimple", "collection": "sessions"},
+    "elasticsearch": {"host": "localhost:9200"}
+}
